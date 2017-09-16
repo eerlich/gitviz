@@ -2,3 +2,4 @@ gitviz_data
 alpakka
 *.swp
 *~
+*.json
