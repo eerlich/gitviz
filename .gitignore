@@ -3,3 +3,4 @@ alpakka
 *.swp
 *~
 *.json
+*.pyc
