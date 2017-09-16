@@ -35,8 +35,8 @@ def get_diff(a,b):
     i = re.match(".*(\d+) insertions", output)
     d = re.match(".*(\d+) deletions", output)
 
-    inserts = i.group(1) if i else 0
-    deletions = d.group(1) if d else 0
+    inserts = int(i.group(1)) if i else 0
+    deletions = int(d.group(1)) if d else 0
 
     out = inserts + deletions
 
@@ -54,37 +54,44 @@ def writejson(res,files):
         with open(files[k], "w") as f:
             f.write(jsval)
 
-def main():
+def run(timestamps):
     datadir = "gitviz_data"
     outdir = "gitviz_out"
-
-    if(len(sys.argv)>1):
-        # assume unix timestamp input
-        ts = int(sys.argv[1])
-    else:
-        ts = time.time()
 
     (f,mf) = get_files(datadir)
     # parse json from files
     js = [parsefile(x) for x in f]
     mjs = [parsefile(x) for x in mf]
 
-    # find latest commit b[T] from each branch (compare to input date)
-    commits=[latestcommit(x,ts) for x in js]
-    mastercommit=latestcommit(mjs[0],ts)
-    mergebases = [get_mergebase(x,mastercommit) for x in commits]
+    res = []
 
-    cumdiffs = [get_diff(a,b) for (a,b) in zip(commits,mergebases)]
-    masterdiffs = [get_diff(a,mastercommit) for a in commits]
+    for ts in timestamps:
+        # find latest commit b[T] from each branch (compare to input date)
+        commits=[latestcommit(x,ts) for x in js]
+        mastercommit=latestcommit(mjs[0],ts)
+        mergebases = [get_mergebase(x,mastercommit) for x in commits]
 
-    # each element contains data (t,d1,d2) for one branch
-    result = [{"timestamp": ts, "cumdiff": a, "masterdiff": b} \
-            for (a,b) in zip(cumdiffs,masterdiffs)]
+        cumdiffs = [get_diff(a,b) for (a,b) in zip(commits,mergebases)]
+        masterdiffs = [get_diff(a,mastercommit) for a in commits]
+
+        # each element contains data (t,d1,d2) for one branch
+        res += [[{"timestamp": ts, "cumdiff": a, "masterdiff": b} \
+                for (a,b) in zip(cumdiffs,masterdiffs)]]
+
+    # transpose results 
+    results=map(list,map(None,*res))
 
     outfiles=[os.path.split(x)[1][:-5]+"_graph.json" for x in f]
+    writejson(results, outfiles)
 
-    # output to a file graphs.json
-    writejson(result, outfiles)
+def main():
+    if(len(sys.argv)>1):
+        # assume unix timestamp input
+        ts = int(sys.argv[1])
+    else:
+        ts = time.time()
+
+    run([ts,ts-1000])
 
 if __name__ == "__main__":
     main()
