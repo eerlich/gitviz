@@ -35,8 +35,9 @@ def get_diff(a,b):
     i = re.match(".*(\d+) insertions", output)
     d = re.match(".*(\d+) deletions", output)
 
-    inserts = i.group() if i else 0
-    deletions = d.group() if d else 0
+    inserts = i.group(1) if i else 0
+    deletions = d.group(1) if d else 0
+
     out = inserts + deletions
 
     return out
@@ -55,6 +56,7 @@ def writejson(res,files):
 
 def main():
     datadir = "gitviz_data"
+    outdir = "gitviz_out"
 
     if(len(sys.argv)>1):
         # assume unix timestamp input
@@ -79,7 +81,7 @@ def main():
     result = [{"timestamp": ts, "cumdiff": a, "masterdiff": b} \
             for (a,b) in zip(cumdiffs,masterdiffs)]
 
-    outfiles=[x[:-5]+"_graph.json" for x in f]
+    outfiles=[os.path.split(x)[1][:-5]+"_graph.json" for x in f]
 
     # output to a file graphs.json
     writejson(result, outfiles)
