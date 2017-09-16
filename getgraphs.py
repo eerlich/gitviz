@@ -44,12 +44,13 @@ def get_diff(a,b):
 def get_mergebase(a,b):
     process = subprocess.Popen(["git", "merge-base", a, b], stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    return output
+
+    return output.strip()
 
 def writejson(res,files):
     for k in range(len(res)):
         jsval=json.dumps(res[k])
-        with open(files[k]) as f:
+        with open(files[k], "w") as f:
             f.write(jsval)
 
 def main():
