@@ -1,5 +1,6 @@
 gitviz_data
 js/node_modules
+*.log
 alpakka
 *.swp
 *~
