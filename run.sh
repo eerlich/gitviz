@@ -4,4 +4,4 @@ rm *.json
 
 git fetch
 ./getlogs.sh
-python getgraphs.py
+python getgraphs.py 100

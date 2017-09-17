@@ -85,13 +85,16 @@ def run(timestamps):
     writejson(results, outfiles)
 
 def main():
-    if(len(sys.argv)>1):
-        # assume unix timestamp input
-        ts = int(sys.argv[1])
+    if(len(sys.argv) > 1):
+        # number of datapoints to generate (30 minute intervals)
+        N = int(sys.argv[1])
+        t=int(time.time())
+        interval=15*60 # in seconds 
+        ts = [t-interval*k for k in range(N)]
     else:
-        ts = time.time()
+        ts = [int(time.time())]
 
-    run([ts,ts-1000])
+    run(ts)
 
 if __name__ == "__main__":
     main()
