@@ -1,7 +1,15 @@
 const d3 = require('d3')
+const fs = require('fs')
 
 function run() {
-    return Date();
+    var f = fs.readFileSync("remotes_origin_generate_graphs_graph.json", "utf8");
+    var js = JSON.parse(f)
+    drawPlot(js)
+    return f;
+}
+
+function drawPlot() {
+
 }
 
 exports.show = function () {
