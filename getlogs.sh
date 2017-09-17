@@ -3,7 +3,7 @@ datadir=gitviz_data
 mkdir -p $datadir
 matcher=origin
 git branch -a --v | tr -s ' ' | cut -f2 -d' '
-branches=`git branch -a --v --sort=committerdate | tr \* " " | tr -s ' ' | cut -f2 -d' ' | grep $matcher`
+branches=`git branch -a --v --sort=-committerdate | tr \* " " | tr -s ' ' | cut -f2 -d' ' | grep $matcher`
 i=0
 maxi=5
 while read -r line; do
