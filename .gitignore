@@ -1,4 +1,5 @@
 gitviz_data
+js/node_modules
 alpakka
 *.swp
 *~
